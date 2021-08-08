@@ -179,7 +179,7 @@ int main(){
 		printf("\nSelect Your Option From Menu.\n");
                 printf("------------------------------\n");
                 //Options for main Menu.
-                printf("1.Rooms\n2.Room Book\n3.Edit Book\n4.Delete\n5.Admin Panel\n");
+                printf("1.Rooms\n2.Room Book\n3.Edit Book\n4.Delete\n5.Admin Panel\n6.Exit\n");
                 printf("\nHMS>> ");
                 scanf("%d", &option); 
                 switch (option)
@@ -187,6 +187,12 @@ int main(){
                 	case 1:
                 		PrintRoomFromFile();
                 		break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
                 	case 5:
                 	//this is main loop.
         					printf("You need to login first.\n");
@@ -201,6 +207,9 @@ int main(){
                 		else{
 
                 		}
+                        break;
+                    case 6:
+                        exit(0);
                 	default:
                 		break;
                 }
