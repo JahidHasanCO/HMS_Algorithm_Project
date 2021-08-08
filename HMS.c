@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <conio.h>
 #include <stdbool.h>
 
 #define _Username_ "Admin" //Define a Default Username for Login
@@ -15,10 +14,10 @@ struct room
     int floor;
     int bed;
     int window;
-    bool isBooked;
+    char isBooked;
     double area;
-    bool AC;
-    bool VIP;
+    char AC;
+    char VIP;
     struct room *next;
 } * head, *tail, *mod;
 
@@ -58,15 +57,15 @@ void PrintRoomFromFile()
     printf("-----------------------------------------------------------------------------------------\n");
     while (fread(temp_node, sizeof(*temp_node), 1, fp) == 1)
     {
-        printf("| %-12d", temp_node->roomId);
-        printf("| %-8s", temp_node->floor);
-        printf("| %-8d", temp_node->bed);
-        printf("| %-10d", temp_node->window);
-        printf("| %-12d", temp_node->isBooked);
-        printf("| %-11.3s", temp_node->area);
-        printf("| %-7lf|\n", temp_node->AC);
-         printf("| %-9lf|\n", temp_node->VIP);
-        printf("--------------------------------------------------------------------------------------\n");
+        printf("| %-11d", temp_node->roomId);
+        printf("| %-7d", temp_node->floor);
+        printf("| %-7d", temp_node->bed);
+        printf("| %-9d", temp_node->window);
+        printf("| %-11c", temp_node->isBooked);
+        printf("| %-13.3lf", temp_node->area);
+        printf("| %-6c", temp_node->AC);
+        printf("| %-8c|\n", temp_node->VIP);
+        printf("-----------------------------------------------------------------------------------------\n");
         i++;
     }
     fclose(fp);
@@ -101,9 +100,9 @@ void insert_room_at_last()
     printf("Enter Area of Room: ");
     scanf("%lf", &area);
     printf("Have AC (y/n): ");
-    scanf("%c", &AC);
+    scanf(" %c", &AC);
     printf("VIP Room (y/n): ");
-    scanf("%c", &VIP);
+    scanf(" %c", &VIP);
 
     //store value in linklist
     struct room *temp_node;
@@ -112,22 +111,10 @@ void insert_room_at_last()
     temp_node->floor = floor;
     temp_node->bed = bed;
     temp_node->window = window;
-    temp_node->isBooked = false;
+    temp_node->isBooked = 'n';
     temp_node->area = area;
-
-    if(AC = 'y'){
-    	temp_node->AC = true;
-    }
-    else{
-    	temp_node->AC = false;
-    }
-    if(VIP = 'y'){
-    	temp_node->VIP = true;
-    }
-    else{
-    	temp_node->VIP = false;
-    }
-
+    temp_node->AC = AC;
+    temp_node->VIP = VIP;
     temp_node->next = NULL;
     fwrite(temp_node, sizeof(*temp_node), 1, fp);
     fclose(fp);
@@ -178,6 +165,7 @@ int main(){
                 	//this is main loop.
         					printf("You need to login first.\n");
         					printf("Username: ");
+                            getchar();
         					gets(name); //input username for login
         					printf("Password: ");
         					gets(pass); 
@@ -192,4 +180,5 @@ int main(){
                 }
 	}
 
+    return 0;
 }
