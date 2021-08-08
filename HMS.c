@@ -39,9 +39,26 @@ bool loginCheck(char name[], char pass[])
     }
 }
 
+int checkRoomID(){
+    int id;
+    struct room *temp_node;
+    FILE *fp;
+    temp_node = (struct room *)malloc(sizeof(struct room));
+    head = temp_node;
+    if ((fp = fopen("db\\room.bin", "rb")) == NULL)
+    {
+        printf("No such file\n");
+        exit(1);
+    }
+    while (fread(temp_node, sizeof(*temp_node), 1, fp) == 1)
+    {
+        id = temp_node->roomId;
+    }
+    return id;
+}
+
 void PrintRoomFromFile()
 {
-    int i = 1;
     struct room *temp_node;
     FILE *fp;
     temp_node = (struct room *)malloc(sizeof(struct room));
@@ -66,7 +83,6 @@ void PrintRoomFromFile()
         printf("| %-6c", temp_node->AC);
         printf("| %-8c|\n", temp_node->VIP);
         printf("-----------------------------------------------------------------------------------------\n");
-        i++;
     }
     fclose(fp);
 }
@@ -89,8 +105,18 @@ void insert_room_at_last()
     char VIP;
     //scanning all details of employee
     printf("Enter Details for Room.\n");
-    printf("Enter Room Id: ");
-    scanf("%d",&roomId);
+    while (1)
+    {
+        printf("Enter Room Id: ");
+        scanf("%d",&roomId);
+        if(roomId > checkRoomID()){
+            break;
+        }
+        else{
+            printf("Enter Room Id Larger Than %d\n", checkRoomID());
+        }
+    }
+    
     printf("Enter Floor: ");
     scanf("%d", &floor);
     printf("Enter Number of bed: ");
