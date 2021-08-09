@@ -100,6 +100,31 @@ void PrintRoomFromFile()
     fclose(fp);
 }
 
+void PrintUsersFromFile()
+{
+    struct User *temp_node;
+    FILE *fp;
+    temp_node = (struct User *)malloc(sizeof(struct User));
+    userHead = temp_node;
+    if ((fp = fopen("db\\customer.bin", "rb")) == NULL)
+    {
+        printf("No such file\n");
+        exit(1);
+    }
+    printf("\n\n                                         All Users Details                                     \n");
+
+    while (fread(temp_node, sizeof(*temp_node), 1, fp) == 1)
+    {
+        printf("\n\nName: %s\n", temp_node->Name);
+        printf("Age: %d\n", temp_node->age);
+        printf("Phone Number: %s\n", temp_node->phoneNumber);
+        printf("Room Id: %d\n", temp_node->bookedRoomID);
+        printf("Days: %d\n", temp_node->days);
+        printf("Price: %lf\n", temp_node->price);
+        printf("-----------------------------------------------------------------------------------------\n");
+    }
+    fclose(fp);
+}
 
 void insert_User_at_last()
 {
@@ -132,7 +157,7 @@ void insert_User_at_last()
     scanf(" %d", &days);
     printf("Price: ");
     scanf(" %lf", &price);
-    
+
     //store value in linklist
     struct User *temp_node;
     temp_node = (struct User *)malloc(sizeof(struct User));
@@ -144,10 +169,9 @@ void insert_User_at_last()
     temp_node->price = price;
     temp_node->next = NULL;
     fwrite(temp_node, sizeof(*temp_node), 1, fp);
+    modify_Room(roomId);
 
     fclose(fp);
-
-    
 }
 
 void PrintAvilAbleRoomFromFile()
@@ -346,7 +370,7 @@ void delete_User_Record()
             printf("Room Id: %d\n", myNode->bookedRoomID);
             printf("Days: %d\n", myNode->days);
             printf("Price: %lf\n", myNode->price);
-        
+
             printf("\n\nFor Delete this record (type 1): ");
             scanf("%d", &key);
             //if user input = 1 then delete function will be work
@@ -374,10 +398,9 @@ void delete_User_Record()
     fclose(temp);
     remove("db\\customer.bin");
     rename("db\\TempCustomer.bin", "db\\customer.bin");
-    
+   
+    modify_Room(value);
 }
-
-
 
 //modify function using by ID
 void modify_Room(int old)
@@ -498,6 +521,108 @@ void modify_Room(int old)
     rename("db\\TempRoom.bin", "db\\room.bin");
 }
 
+void modify_RoomBook(int old)
+{
+
+    char Name[100];
+    int age;
+    char phoneNumber[12];
+    int bookedRoomID;
+    int days;
+    double price;
+
+    int option;
+    FILE *fp, *temp;
+    fp = fopen("db\\customer.bin", "rb");
+    temp = fopen("db\\TempCustomer.bin", "wb"); //old value
+    int pos = 0, key;                           //position and option change value variable
+
+    struct User *current = (struct User *)malloc(sizeof(struct User));
+    struct User *temp1 = (struct User *)malloc(sizeof(struct User));
+    /* this codindition for first node or last node....
+    I mean database has only one node then this condition will be run
+    or database has last node to check then this condition will be run
+    */
+    while (fread(current, sizeof(*current), 1, fp) == 1)
+    {
+
+        if (current->bookedRoomID == old)
+        {
+            printf("Name: %s\n", current->Name);
+            printf("Age: %d\n", current->age);
+            printf("Phone Number: %s\n", current->phoneNumber);
+            printf("Room Id: %d\n", current->bookedRoomID);
+            printf("Days: %d\n", current->days);
+            printf("Price: %lf\n", current->price);
+
+            printf("\nDo You want to Modifie this Records?(1 = Yes, 2 = No)\n");
+            printf("--------------------------------------------------------\n");
+            scanf(" %d", &key);
+
+            while (key == 1)
+            {
+                printf("\nChoose option for modifie\n");
+                printf("--------------------------\n");
+                printf("1. Name change.\n");
+                printf("2. Age change\n");
+                printf("3. Phone Number change\n");
+                printf("4. Days change\n");
+                printf("5. Price change\n");
+                printf("6. Exit\n");
+                printf("\nChange>> ");
+                scanf(" %d", &option);
+                if (option == 6)
+                {
+                    break;
+                }
+
+                switch (option)
+                {
+                case 1:
+                    printf("Enter new Name: ");
+                    getchar();
+                    gets(Name);
+                    strcpy(current->Name, Name);
+                    break;
+                case 2:
+                    printf("Enter new Age: ");
+                    scanf("%d", &age);
+                    current->age = age;
+                    break;
+                case 3:
+                    printf("Enter new Phone Number: ");
+                    getchar();
+                    gets(phoneNumber);
+                    strcpy(current->phoneNumber, phoneNumber);
+                    break;
+                case 4:
+                    printf("Upadate Days: ");
+                    scanf(" %d", &days);
+                    current->days = days;
+                    break;
+                case 5:
+                    printf("Enter new Price: ");
+                    scanf("%lf", &price);
+                    current->price = price;
+                    break;
+                default:
+                    printf("\nYou have to choose right option\n");
+                    break;
+                }
+            }
+            fwrite(current, 1, sizeof(*current), temp);
+        }
+        else
+        {
+            fwrite(current, 1, sizeof(*current), temp);
+        }
+    }
+    fclose(fp);
+    fclose(temp);
+    remove("db\\customer.bin");
+    rename("db\\TempCustomer.bin", "db\\customer.bin");
+}
+
 // logo function
 void printLogo()
 {
@@ -546,6 +671,9 @@ int main()
             PrintAvilAbleRoomFromFile();
             break;
         case 3:
+            printf("\nEnter Room ID for modifie: ");
+            scanf("%d", &old);
+            modify_RoomBook(old);
             break;
         case 4:
             delete_User_Record();
@@ -565,10 +693,10 @@ int main()
                     printf("\nSelect Option.\n");
                     printf("------------------------------\n");
                     //Options for main Menu.
-                    printf("1.Add Room\n2.Edit Room \n3.Delete Room\n4.back\n");
+                    printf("1.Add Room\n2.Edit Room \n3.Delete Room\n4.Show All Customers\n5.back\n");
                     printf("\nHMS>> ");
                     scanf("%d", &option5);
-                    if (option5 == 4)
+                    if (option5 == 5)
                     {
                         break;
                     }
@@ -584,6 +712,9 @@ int main()
                         break;
                     case 3:
                         delete_Room_Record();
+                        break;
+                    case 4:
+                        PrintUsersFromFile();
                         break;
                     default:
                         break;
