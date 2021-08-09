@@ -180,46 +180,72 @@ void insert_room_at_last()
     fclose(fp);
 }
 
+//Delete  Record By ID
+void delete_Room_Record()
+{
+    int value, key;
+    FILE *fp, *temp;
 
-// //Delete Employees Record By ID
-// void search_Room_Record()
-// {
-//     struct room *temp_node;
-//     FILE *fp;
-//     temp_node = (struct room *)malloc(sizeof(struct room));
+    struct room *myNode = (struct room *)malloc(sizeof(struct room));
 
-//     if ((fp = fopen("db\\room.bin", "rb")) == NULL)
-//     {
-//         printf("No such file\n");
-//     }
-//     fread(temp_node, sizeof(*temp_node), 1, fp);
-//     head = temp_node;
-//     int value, key;
-//     printf("Enter ID: ");
-//     scanf("%d", &value);
-//     if (0)
-//     {
-//         printf("\nNot Found\n");
-//         mid = NULL;
-//     }
-//     else
-//     {
-//         printf("\n\n                                     Search Result                                   \n");
-//         printf("-----------------------------------------------------------------------------------------\n");
-//         printf("| Room Id    | Floor  | Bed    | Window   | isBooked   | Area         | AC    | VIP     |\n");
-//         printf("-----------------------------------------------------------------------------------------\n");
-//         printf("| %-11d", mid->roomId);
-//         printf("| %-7d", mid->floor);
-//         printf("| %-7d", mid->bed);
-//         printf("| %-9d", mid->window);
-//         printf("| %-11c", mid->isBooked);
-//         printf("| %-13.3lf", mid->area);
-//         printf("| %-6c", mid->AC);
-//         printf("| %-8c|\n", mid->VIP);
-//         printf("-----------------------------------------------------------------------------------------\n");
-//         mid = NULL;
-//     }
-// }
+    int flag = 0;
+    if ((fp = fopen("db\\room.bin", "rb")) == NULL)
+    {
+        printf("No such file\n");
+        exit(1);
+    }
+    if ((temp = fopen("db\\TempRoom.bin", "wb")) == NULL)
+    {
+        printf("No such file\n");
+        exit(1);
+    }
+    printf("Enter Room ID: ");
+    scanf("%d", &value);
+    while (fread(myNode, sizeof(*myNode), 1, fp) == 1)
+    {
+
+        if (myNode->roomId == value)
+        {
+
+            printf("\nDo you Really delete this Room Record\n");
+            printf("-----------------------------------------------------------------------------------------\n");
+            printf("| Room Id    | Floor  | Bed    | Window   | isBooked   | Area         | AC    | VIP     |\n");
+            printf("-----------------------------------------------------------------------------------------\n");
+            printf("| %-11d", myNode->roomId);
+            printf("| %-7d", myNode->floor);
+            printf("| %-7d", myNode->bed);
+            printf("| %-9d", myNode->window);
+            printf("| %-11c", myNode->isBooked);
+            printf("| %-13.3lf", myNode->area);
+            printf("| %-6c", myNode->AC);
+            printf("| %-8c|\n", myNode->VIP);
+            printf("-----------------------------------------------------------------------------------------\n");
+            printf("\n\nFor Delete this record (type 1): ");
+            scanf("%d", &key);
+            //if user input = 1 then delete function will be work
+            if (key == 1)
+            {
+                flag = 1;
+            }
+            else
+            {
+                fwrite(myNode, 1, sizeof(struct room), temp);
+                flag = 1;
+            }
+        }
+        else
+        {
+            fwrite(myNode, 1, sizeof(struct room), temp);
+        }
+    }
+
+    if (flag == 0) // if user input not match with database this messege will be show
+        printf("\nThis ID not found!\n");
+    fclose(fp);
+    fclose(temp);
+    remove("db\\room.bin");
+    rename("db\\TempRoom.bin", "db\\room.bin");
+}
 
 // logo function
 void printLogo()
@@ -245,7 +271,7 @@ int main()
     mod = NULL;
     mid = NULL;
 
-    int option, option6;
+    int option, option5;
     char name[15], pass[15];
 
     // system("CLS");
@@ -256,7 +282,7 @@ int main()
         printf("\nSelect Your Option From Menu.\n");
         printf("------------------------------\n");
         //Options for main Menu.
-        printf("1.Rooms\n2.Room Book\n3.Search Book\n4.Edit Book\n5.Delete Room\n6.Admin Panel\n7.Exit\n");
+        printf("1.Rooms\n2.Room Book\n3.Edit Book\n4.Delete Room\n5.Admin Panel\n6.Exit\n");
         printf("\nHMS>> ");
         scanf("%d", &option);
         switch (option)
@@ -272,7 +298,7 @@ int main()
             break;
         case 4:
             break;
-        case 6:
+        case 5:
             //this is main loop.
             printf("You need to login first.\n");
             printf("Username: ");
@@ -289,12 +315,12 @@ int main()
                     //Options for main Menu.
                     printf("1.Add Room\n2.Edit Room \n3.Delete Room\n4.back\n");
                     printf("\nHMS>> ");
-                    scanf("%d", &option6);
-                    if (option6 == 4)
+                    scanf("%d", &option5);
+                    if (option5 == 4)
                     {
                         break;
                     }
-                    switch (option6)
+                    switch (option5)
                     {
                     case 1:
                         insert_room_at_last();
@@ -302,6 +328,7 @@ int main()
                     case 2:
                         break;
                     case 3:
+                        delete_Room_Record();
                         break;
                     default:
                         break;
@@ -312,7 +339,7 @@ int main()
             {
             }
             break;
-        case 7:
+        case 6:
             exit(0);
         default:
             break;
