@@ -132,7 +132,7 @@ void insert_User_at_last()
     scanf(" %d", &days);
     printf("Price: ");
     scanf(" %lf", &price);
-   
+    
     //store value in linklist
     struct User *temp_node;
     temp_node = (struct User *)malloc(sizeof(struct User));
@@ -315,6 +315,7 @@ void delete_Room_Record()
 void delete_User_Record()
 {
     int value, key;
+    int id;
     FILE *fp, *temp;
 
     struct User *myNode = (struct User *)malloc(sizeof(struct User));
@@ -352,6 +353,8 @@ void delete_User_Record()
             if (key == 1)
             {
                 flag = 1;
+                id = myNode->bookedRoomID;
+                modify_Room(id);
             }
             else
             {
@@ -371,6 +374,7 @@ void delete_User_Record()
     fclose(temp);
     remove("db\\customer.bin");
     rename("db\\TempCustomer.bin", "db\\customer.bin");
+    
 }
 
 
