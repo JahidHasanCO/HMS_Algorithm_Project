@@ -250,7 +250,7 @@ void delete_Room_Record()
 //modify function using by ID
 void modify_Room()
 {
-   
+
     int option;
     int floor;
     int bed;
@@ -317,7 +317,7 @@ void modify_Room()
                 {
                 case 1:
                     printf("Enter new Floor: ");
-                    scanf("%d",&floor);
+                    scanf("%d", &floor);
                     current->floor = floor;
                     break;
                 case 2:
@@ -368,7 +368,6 @@ void modify_Room()
     rename("db\\TempRoom.bin", "db\\room.bin");
 }
 
-
 // logo function
 void printLogo()
 {
@@ -416,7 +415,7 @@ int main()
             PrintAvilAbleRoomFromFile();
             break;
         case 3:
-            // search_Room_Record();
+    
             break;
         case 4:
             break;
