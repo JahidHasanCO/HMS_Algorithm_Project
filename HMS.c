@@ -272,7 +272,6 @@ void modify_RoomBook(int old)
     rename("db\\TempCustomer.bin", "db\\customer.bin");
 }
 
-
 int checkRoomID()
 {
     int id;
@@ -427,7 +426,13 @@ void PrintAvilAbleRoomFromFile()
         }
     }
 
-    insert_User_at_last();
+    printf("Do You Want to Book Room? (y/n)\n");
+    char op;
+    scanf(" %c", &op);
+    if (op == 'y')
+    {
+        insert_User_at_last();
+    }
 
     fclose(fp);
 }
@@ -620,10 +625,9 @@ void delete_User_Record()
     fclose(temp);
     remove("db\\customer.bin");
     rename("db\\TempCustomer.bin", "db\\customer.bin");
-   
+
     modify_Room(value);
 }
-
 
 // logo function
 void printLogo()
