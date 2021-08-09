@@ -247,6 +247,128 @@ void delete_Room_Record()
     rename("db\\TempRoom.bin", "db\\room.bin");
 }
 
+//modify function using by ID
+void modify_Room()
+{
+   
+    int option;
+    int floor;
+    int bed;
+    int window;
+    char isBooked;
+    double area;
+    char AC;
+    char VIP;
+
+    FILE *fp, *temp;
+    fp = fopen("db\\room.bin", "rb");
+    temp = fopen("db\\TempRoom.bin", "wb");
+    int old;          //old value
+    int pos = 0, key; //position and option change value variable
+    printf("\nEnter Room ID for modifie: ");
+    scanf("%d", &old);
+    struct room *current = (struct room *)malloc(sizeof(struct room));
+    struct room *temp1 = (struct room *)malloc(sizeof(struct room));
+    /* this codindition for first node or last node....
+    I mean database has only one node then this condition will be run
+    or database has last node to check then this condition will be run
+    */
+    while (fread(current, sizeof(*current), 1, fp) == 1)
+    {
+
+        if (current->roomId == old)
+        {
+            printf("-----------------------------------------------------------------------------------------\n");
+            printf("| Room Id    | Floor  | Bed    | Window   | isBooked   | Area         | AC    | VIP     |\n");
+            printf("-----------------------------------------------------------------------------------------\n");
+            printf("| %-11d", current->roomId);
+            printf("| %-7d", current->floor);
+            printf("| %-7d", current->bed);
+            printf("| %-9d", current->window);
+            printf("| %-11c", current->isBooked);
+            printf("| %-13.3lf", current->area);
+            printf("| %-6c", current->AC);
+            printf("| %-8c|\n", current->VIP);
+            printf("-----------------------------------------------------------------------------------------\n");
+            printf("\nDo You want to Modifie this Records?(1 = Yes, 2 = No)\n");
+            printf("--------------------------------------------------------\n");
+            scanf(" %d", &key);
+
+            while (key == 1)
+            {
+                printf("\nChoose option for modifie\n");
+                printf("--------------------------\n");
+                printf("1. Floor change.\n");
+                printf("2. Bed change\n");
+                printf("3. Window change\n");
+                printf("4. Booking change\n");
+                printf("5. Area change\n");
+                printf("6. AC change\n");
+                printf("7. VIP\n");
+                printf("8. Exit\n");
+                printf("\nChange>> ");
+                scanf(" %d", &option);
+                if (option == 8)
+                {
+                    break;
+                }
+
+                switch (option)
+                {
+                case 1:
+                    printf("Enter new Floor: ");
+                    scanf("%d",&floor);
+                    current->floor = floor;
+                    break;
+                case 2:
+                    printf("Enter new Beds Number: ");
+                    scanf("%d", &bed);
+                    current->bed = bed;
+                    break;
+                case 3:
+                    printf("Enter new Windows Number: ");
+                    scanf("%d", &window);
+                    current->window = window;
+                    break;
+                case 4:
+                    printf("Upadate Booking: ");
+                    scanf(" %c", &isBooked);
+                    current->isBooked = isBooked;
+                    break;
+                case 5:
+                    printf("Enter new Area of Room: ");
+                    scanf("%lf", &area);
+                    current->area = area;
+                    break;
+                case 6:
+                    printf("Update AC Status: ");
+                    scanf(" %c", &AC);
+                    current->AC = AC;
+                    break;
+                case 7:
+                    printf("Update VIP Status: ");
+                    scanf(" %c", &VIP);
+                    current->VIP = VIP;
+                    break;
+                default:
+                    printf("\nYou have to choose right option\n");
+                    break;
+                }
+            }
+            fwrite(current, 1, sizeof(*current), temp);
+        }
+        else
+        {
+            fwrite(current, 1, sizeof(*current), temp);
+        }
+    }
+    fclose(fp);
+    fclose(temp);
+    remove("db\\room.bin");
+    rename("db\\TempRoom.bin", "db\\room.bin");
+}
+
+
 // logo function
 void printLogo()
 {
@@ -326,6 +448,7 @@ int main()
                         insert_room_at_last();
                         break;
                     case 2:
+                        modify_Room();
                         break;
                     case 3:
                         delete_Room_Record();
