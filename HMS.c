@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+
 #define _Username_ "Admin" //Define a Default Username for Login
 #define _Password_ "Admin" //Define a Default Password for Login
 
@@ -272,6 +273,39 @@ void modify_RoomBook(int old)
     rename("db\\TempCustomer.bin", "db\\customer.bin");
 }
 
+void PrintRoomSortedFromFile()
+{
+    struct room *temp_node;
+    
+    FILE *fp;
+    temp_node = (struct room *)malloc(sizeof(struct room));
+    head = temp_node;
+    if ((fp = fopen("db\\room.bin", "rb")) == NULL)
+    {
+        printf("No such file\n");
+        exit(1);
+    }
+    printf("\n\n                                         All Room Details                                     \n");
+    printf("-----------------------------------------------------------------------------------------\n");
+    printf("| Room Id    | Floor  | Bed    | Window   | isBooked   | Area         | AC    | VIP     |\n");
+    printf("-----------------------------------------------------------------------------------------\n");
+    while (fread(temp_node, sizeof(*temp_node), 1, fp) == 1)
+    {
+        printf("| %-11d", temp_node->roomId);
+        printf("| %-7d", temp_node->floor);
+        printf("| %-7d", temp_node->bed);
+        printf("| %-9d", temp_node->window);
+        printf("| %-11c", temp_node->isBooked);
+        printf("| %-13.3lf", temp_node->area);
+        printf("| %-6c", temp_node->AC);
+        printf("| %-8c|\n", temp_node->VIP);
+        printf("-----------------------------------------------------------------------------------------\n");
+    }
+    fclose(fp);
+}
+
+
+
 int checkRoomID()
 {
     int id;
@@ -390,8 +424,7 @@ void insert_User_at_last()
     temp_node->price = price;
     temp_node->next = NULL;
     fwrite(temp_node, sizeof(*temp_node), 1, fp);
-    modify_Room(roomId);
-
+   
     fclose(fp);
 }
 
@@ -625,8 +658,6 @@ void delete_User_Record()
     fclose(temp);
     remove("db\\customer.bin");
     rename("db\\TempCustomer.bin", "db\\customer.bin");
-
-    modify_Room(value);
 }
 
 // logo function
